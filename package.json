@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/GabrieleFoti/Discord#readme",
   "dependencies": {
-    "discord.js": "^12.2.0",
-    "nodemon": "^2.0.4"
+    "discord.js": "^12.2.0"
   }
 }
