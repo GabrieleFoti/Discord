@@ -153,7 +153,7 @@ client.on('message', async message =>{
     .setTimestamp()
     message.channel.send(embed)
   }
-  else if(message.content.startsWith(prefix + 'coinflip')){
+  else if(message.content.startsWith(prefix + 'coin')){
     var x = Math.floor(Math.random() * 2)
 
     if(x == 0) message.reply(' head.')
