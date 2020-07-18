@@ -150,6 +150,7 @@ client.on('message', async message =>{
       {name : 'Mentionable: ', value : `${role.mentionable}`},
       {name : 'Permissions: ', value : `${role.permissions.toArray().join('\n')}`}
     )
+    .setTimestamp()
     message.channel.send(embed)
   }
   else if(message.content.startsWith(prefix + 'coinflip')){
