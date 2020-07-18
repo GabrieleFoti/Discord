@@ -171,4 +171,4 @@ client.on('message', async message =>{
 
 })
 
-client.login('NTc2MDI2NTAwNzkzNDk5NjQ4.XxHFxw.VOZmlyKoNbuCMBFGlD68_wRSNZs')
+client.login('NTc2MDI2NTAwNzkzNDk5NjQ4.XxOA0w.41lvK-QaaquFUUGN5yh4cq5rD9c')
