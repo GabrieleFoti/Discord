@@ -1,6 +1,38 @@
+require('dotenv-flow').config()
 const Discord = require('discord.js')
 const client = new Discord.Client()
+const mysql = require('mysql')
+var prefix = '.'
+const config = {
+  token : process.env.TOKEN,
+  host : process.env.host,
+  user : process.env.user,
+  password : process.env.password,
+  database : process.env.database,
+}
 
+const connection = mysql.createConnection({
+
+  host : config.host,
+  user : config.user,
+  password : config.password,
+  database : config.database,
+
+})
+
+connection.connect((err) => {
+  if(err) console.error(err)
+})
+
+client.on('guildCreate', (guild) => {
+  connection.query(`INSERT INTO \`Guild\`(\`id\`, \`prefix\`, \`name\`, \`guild_id\`) VALUES (NULL, '.','${guild.name}',${guild.id})`, (err) => {})
+})
+
+client.on('guildDelete', (guild) => {
+
+  connection.query(`DELETE FROM \`Guild\` WHERE guild_id = ${guild.id}`, (err) => {})
+
+})
 
 client.on('ready', () => {
   console.log('Ready.')
@@ -8,11 +40,39 @@ client.on('ready', () => {
     .catch(console.error)
 })
 
-client.on('message', async message =>{
-  prefix = '.'
-  if(message.author.bot) return undefined
+client.on('guildMemberAdd', (member) => {
+  connection.query(`SELECT welcome_msg, welcome_channel_id FROM Guild WHERE guild_id = ${member.guild.id}`, (err, results) => {
+    if(err) console.error(err)
+    else {
+      if(results[0].welcome_msg === 0) return
+      else{
+        var channel = results[0].welcome_channel_id
+        var welcome_channel = member.guild.channels.cache.get(channel)
+        welcome_channel.send(`Welcome, ${member}. (っ◔◡◔)っ`)
+      }
+    }
+
+  })
+})
+
+client.on('message', async message => {
+  //if the message is from a dm channel return
   if(message.channel.type === 'dm') return undefined
+  // setting the prefix
+  connection.query(`SELECT prefix FROM Guild WHERE guild_id = ${message.guild.id}`, (err, result) => {
+    if(err){
+      console.error(err)
+    }
+
+    prefix = result[0].prefix
+
+  })
+  await resolve(1)
+  // if the message author is a bot return
+  if(message.author.bot) return undefined
+  //if the message doesn't start with the prefix return
   if(!message.content.startsWith(prefix)) return undefined
+
 
   if(message.content.startsWith(prefix + 'help')){
     message.react('🌑')
@@ -21,7 +81,7 @@ client.on('message', async message =>{
     embedMsg.setTitle('Commands list')
     embedMsg.setDescription('Hi I\'m Gin, I am capable of executing some moderation commands to help you manage your server.')
     embedMsg.addFields(
-      {name : 'Moderation commands: ', value : '``clear`` [number of messages(max 100)] \n``kick`` [member tag or member id] [reason(optional)] \n``ban`` [member tag] [reason(optional)] \n``softban`` [member tag or id] \n``unban`` [member tag or id]'},
+      {name : 'Moderation commands: ', value : '``setprefix`` [new prefix] \n``togglewelcome`` [on/off] [tag of the channel to send the message in]\n``clear`` [number of messages(max 100)] \n``kick`` [member tag or member id] [reason(optional)] \n``ban`` [member tag] [reason(optional)] \n``softban`` [member tag or id] \n``unban`` [member tag or id]'},
       {name : 'Info commands: ', value : '``userinfo`` [user tag] \n``serverinfo`` \n``roleinfo`` [role tag]'},
       {name : 'Funny commands: ', value : '``coinflip`` \n``dice`` [n faces of the dice] '}
     )
@@ -51,7 +111,8 @@ client.on('message', async message =>{
     }
     reason = args.splice(2,).join(' ')
     if(!reason) reason = undefined
-    member.send(`You have been kicked from ***${message.guild.name}*** for reason: ***${reason}***`).then(() => member.kick(reason))
+    if(member.user.bot) member.kick(reason)
+    else member.send(`You have been kicked from ***${message.guild.name}*** for reason: ***${reason}***`).then(() => member.kick(reason))
   }
   else if(message.content.startsWith(prefix + 'ban')){
 
@@ -65,6 +126,7 @@ client.on('message', async message =>{
     }
     reason = args.splice(2,).join(' ')
     if(!reason) reason = undefined
+    if(member.user.bot) member.ban(reason)
     member.send(`You have been banned from ***${message.guild.name}*** for reason: ***${reason}***`).then(() => member.ban({days : 14, reason : reason}))
 
   }
@@ -166,10 +228,36 @@ client.on('message', async message =>{
     message.reply(x)
 
   }
-  else{
-    message.reply('this command does not exist, try the help command to get the list of all the commands.')
+  else if(message.content.startsWith(prefix + 'setprefix')){
+    if(!message.member.permissions.has('MANAGE_GUILD')) return message.reply('you do not have the permission to perform this action.')
+    var args = message.content.split(' ')[1]
+    if(args === undefined) return message.reply('you must specify a new prefix to set.')
+    connection.query(`UPDATE Guild SET prefix = '${args}' WHERE guild_id = '${message.guild.id}'`, (err) => {
+      if(err) console.error(err)
+    })
+    message.reply('the prefix has been changed successfully.')
+  }
+  else if(message.content.startsWith(prefix + 'togglewelcome')){
+    if(!message.member.permissions.has('MANAGE_GUILD')) return message.reply('you do not have the permission to perform this action.')
+    var args = message.content.split(' ')
+    var toggle = args[1]
+    var channel = message.mentions.channels.first()
+    if(toggle === undefined || (toggle != 'on' && toggle != 'off')) return message.reply('you must set the message to on or off.')
+    if(channel === undefined) return message.reply('you must set a channel for the welcome message.')
+    if(toggle === 'on') connection.query(`UPDATE Guild SET welcome_msg = 1, welcome_channel_id = ${channel.id} WHERE guild_id = ${message.guild.id}`, (err) => {
+      if(err) message.reply('there was an error setting the channel, please try again.')
+      })
+      else connection.query(`UPDATE Guild SET welcome_msg = 0, welcome_channel_id = NULL WHERE guild_id = ${message.guild.id}`, (err) => {
+        if(err) message.reply('there was an error switching off the command, please try again.')
+      })
   }
 
 })
-
-client.login('NTc2MDI2NTAwNzkzNDk5NjQ4.XxOA0w.41lvK-QaaquFUUGN5yh4cq5rD9c')
+function resolve(x) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(x);
+    }, 80);
+  });
+}
+client.login(config.token)

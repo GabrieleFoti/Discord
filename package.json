@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/GabrieleFoti/Discord#readme",
   "dependencies": {
-    "discord.js": "^12.2.0"
+    "discord.js": "^12.2.0",
+    "dotenv-flow": "^3.2.0",
+    "mysql": "^2.18.1"
   }
 }
