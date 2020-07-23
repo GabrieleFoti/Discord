@@ -86,6 +86,7 @@ client.on('message', async message => {
       {name : 'Funny commands: ', value : '``coinflip`` \n``dice`` [n faces of the dice] '}
     )
     message.member.send(embedMsg)
+    
 
   }
   else if(message.content.startsWith(prefix + 'clear')){
