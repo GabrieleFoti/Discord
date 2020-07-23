@@ -3,6 +3,7 @@ const Discord = require('discord.js')
 const client = new Discord.Client()
 const mysql = require('mysql')
 var prefix = '.'
+var palese = '.'
 const config = {
   token : process.env.TOKEN,
   host : process.env.host,
@@ -41,14 +42,20 @@ client.on('ready', () => {
 })
 
 client.on('guildMemberAdd', (member) => {
-  connection.query(`SELECT welcome_msg, welcome_channel_id FROM Guild WHERE guild_id = ${member.guild.id}`, (err, results) => {
+  connection.query(`SELECT welcome_msg, welcome_channel_id, welcome_role, welcome_role_id FROM Guild WHERE guild_id = ${member.guild.id}`, (err, results) => {
     if(err) console.error(err)
     else {
-      if(results[0].welcome_msg === 0) return
+      if(results[0].welcome_msg === 0);
       else{
         var channel = results[0].welcome_channel_id
         var welcome_channel = member.guild.channels.cache.get(channel)
         welcome_channel.send(`Welcome, ${member}. (っ◔◡◔)っ`)
+      }
+      if(results[0].welcome_role === 0);
+      else{
+        var role = results[0].welcome_role_id
+        var welcome_role = member.guild.roles.cache.get(role)
+        member.roles.add(welcome_role)
       }
     }
 
@@ -72,21 +79,48 @@ client.on('message', async message => {
   if(message.author.bot) return undefined
   //if the message doesn't start with the prefix return
   if(!message.content.startsWith(prefix)) return undefined
+  if(message.content.startsWith(prefix + 'test')){
+    args = message.mentions.channels.first()
+    console.log(args.permissionOverwrites)
+  }
+  if(message.content.startsWith(prefix + 'lock')){
+    if(!message.member.permissions.has('MANAGE_CHANNELS')) return message.reply('you do not have the permission to do that.')
+    args = message.mentions.channels.first()
 
-
-  if(message.content.startsWith(prefix + 'help')){
+    if(!args.permissionOverwrites.first()){
+      args.createOverwrite(message.guild.id, { 'SEND_MESSAGES' : false})
+    }
+    else args.permissionOverwrites.first().update({ 'SEND_MESSAGES' : false, })
+    let embed = new Discord.MessageEmbed()
+      .setDescription(`❌ locked channel ${args}.`)
+    message.channel.send(embed)
+  }
+  else if(message.content.startsWith(prefix + 'unlock')){
+    if(!message.member.permissions.has('MANAGE_CHANNELS')) return message.reply('you do not have the permission to do that.')
+    args = message.mentions.channels.first()
+    if(!args.permissionOverwrites.first()){
+      args.createOverwrite(message.guild.id, { 'SEND_MESSAGES' : null})
+    }
+    else args.permissionOverwrites.first().update({ 'SEND_MESSAGES' : null, })
+    let embed = new Discord.MessageEmbed()
+      .setDescription(`✅ unlocked channel ${args}.`)
+    message.channel.send(embed)
+  }
+  else if(message.content.startsWith(prefix + 'help')){
     message.react('🌑')
     let embedMsg = new Discord.MessageEmbed()
     embedMsg.setAuthor('Gin', client.user.avatarURL())
-    embedMsg.setTitle('Commands list')
+    embedMsg.setTitle(`Commands list   |   current prefix: '${prefix}'`)
     embedMsg.setDescription('Hi I\'m Gin, I am capable of executing some moderation commands to help you manage your server.')
     embedMsg.addFields(
-      {name : 'Moderation commands: ', value : '``setprefix`` [new prefix] \n``togglewelcome`` [on/off] [tag of the channel to send the message in]\n``clear`` [number of messages(max 100)] \n``kick`` [member tag or member id] [reason(optional)] \n``ban`` [member tag] [reason(optional)] \n``softban`` [member tag or id] \n``unban`` [member tag or id]'},
+      {name : 'Managing commands: ', value : '``togglewelcome`` [on/off] [tag of the channel to send the message in] \n``autorole`` [on/off] [role tag] sets an autorole for the new members.'},
+      {name : 'Moderation commands: ', value : '``setprefix`` [new prefix] \n``clear`` [number of messages(max 100)] \n``kick`` [member tag or member id] [reason(optional)] \n``ban`` [member tag] [reason(optional)] \n``softban`` [member tag or id] \n``unban`` [member tag or id] \n``lock`` [channel tag] \n``unlock`` [channel tag]'},
       {name : 'Info commands: ', value : '``userinfo`` [user tag] \n``serverinfo`` \n``roleinfo`` [role tag]'},
       {name : 'Funny commands: ', value : '``coinflip`` \n``dice`` [n faces of the dice] '}
     )
+    embedMsg.setTimestamp()
     message.member.send(embedMsg)
-    
+
 
   }
   else if(message.content.startsWith(prefix + 'clear')){
@@ -251,6 +285,17 @@ client.on('message', async message => {
       else connection.query(`UPDATE Guild SET welcome_msg = 0, welcome_channel_id = NULL WHERE guild_id = ${message.guild.id}`, (err) => {
         if(err) message.reply('there was an error switching off the command, please try again.')
       })
+  }else if(message.content.startsWith(prefix + 'autorole')){
+    if(!message.member.permissions.has('MANAGE_GUILD')) return message.reply('you do not have the permission to perform this action.')
+    if(!message.member.permissions.has('MANAGE_ROLES')) return message.reply('you do not have the permission to perform this action.')
+    var args = message.content.split(' ')
+    var toggle = args[1]
+    var role = message.mentions.roles.first()
+    if(toggle === undefined || (toggle != 'on' && toggle != 'off')) return message.reply('you must set the feature to on or off.')
+    if(role === undefined) return message.reply('you must set a role.')
+
+    if(toggle === 'on'){ connection.query(`UPDATE Guild SET welcome_role = 1, welcome_role_id = ${role.id} WHERE guild_id = ${message.guild.id}`); message.reply(` the ${role.name} role has been set as a welcome role.`)}
+    else{ connection.query(`UPDATE Guild SET welcome_role = 0, welcome_role_id = NULL WHERE guild_id = ${message.guild.id}`); message.reply(` the feature has been disabled.`)}
   }
 
 })
