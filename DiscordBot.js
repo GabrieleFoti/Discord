@@ -72,7 +72,7 @@ client.on('message', async message => {
     if(err){
       console.error(err)
     }
-
+    console.log(result)
     prefix = result[0].prefix
 
   })
@@ -81,10 +81,7 @@ client.on('message', async message => {
   if(message.author.bot) return undefined
   //if the message doesn't start with the prefix return
   if(!message.content.startsWith(prefix)) return undefined
-  if(message.content.startsWith(prefix + 'test')){
-    args = message.mentions.channels.first()
-    console.log(args.permissionOverwrites)
-  }
+
   if(message.content.startsWith(prefix + 'lock')){
     if(!message.member.permissions.has('MANAGE_CHANNELS')) return message.reply('you do not have the permission to do that.')
     args = message.mentions.channels.first()
