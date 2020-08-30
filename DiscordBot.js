@@ -105,6 +105,7 @@ client.on('message', async message => {
       .setDescription(`✅ unlocked channel ${args}.`)
     message.channel.send(embed)
   }
+  
   else if(message.content.startsWith(prefix + 'info')){
     if(!message.author.id === 366345779687981056 && !message.author.id === 359648176791355403) return mesage.reply('you do not have the permission to do that.')
 
