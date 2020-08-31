@@ -26,7 +26,8 @@ connection.connect((err) => {
 })
 
 client.on('guildCreate', (guild) => {
-  connection.query(`INSERT INTO \`Guild\`(\`id\`, \`prefix\`, \`name\`, \`guild_id\`) VALUES (NULL, '.','${guild.name}',${guild.id})`, (err) => {})
+  name = guild.name.replace('\'', '\\\'')
+  connection.query(`INSERT INTO \`Guild\`(\`id\`, \`prefix\`, \`name\`, \`guild_id\`) VALUES (NULL, '.','${name}',${guild.id})`, (err) => {})
 })
 
 client.on('guildDelete', (guild) => {
@@ -47,6 +48,7 @@ client.on('guildMemberAdd', (member) => {
   connection.query(`SELECT welcome_msg, welcome_channel_id, welcome_role, welcome_role_id FROM Guild WHERE guild_id = ${member.guild.id}`, (err, results) => {
     if(err) console.error(err)
     else {
+
       if(results[0].welcome_msg === 0);
       else{
         var channel = results[0].welcome_channel_id
@@ -105,7 +107,7 @@ client.on('message', async message => {
       .setDescription(`✅ unlocked channel ${args}.`)
     message.channel.send(embed)
   }
-  
+
   else if(message.content.startsWith(prefix + 'info')){
     if(!message.author.id === 366345779687981056 && !message.author.id === 359648176791355403) return mesage.reply('you do not have the permission to do that.')
 
