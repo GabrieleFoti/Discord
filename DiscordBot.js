@@ -214,7 +214,7 @@ client.on('message', async message => {
         embedmessage.setAuthor(user.tag, user.avatarURL())
         embedmessage.setDescription(user)
         embedmessage.setThumbnail(user.avatarURL())
-        if(member.roles.cache.array().length > 0){
+        if(member.roles.cache.array().length > 1){
         embedmessage.addFields(
           { name: 'Joined at:', value: memdate, inline: true },
   		    { name: 'Registered at:', value: usedate, inline: true },
