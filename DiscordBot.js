@@ -290,14 +290,20 @@ client.on('message', async message => {
     var channel = message.mentions.channels.first()
     if(toggle === undefined || (toggle != 'on' && toggle != 'off')) return message.reply('you must set the message to on or off.')
     if(channel === undefined) return message.reply('you must set a channel for the welcome message.')
-    if(toggle === 'on') connection.query(`UPDATE Guild SET welcome_msg = 1, welcome_channel_id = ${channel.id} WHERE guild_id = ${message.guild.id}`, (err) => {
+    if(toggle === 'on'){
+      message.reply('welcome message turned on.')
+      connection.query(`UPDATE Guild SET welcome_msg = 1, welcome_channel_id = ${channel.id} WHERE guild_id = ${message.guild.id}`, (err) => {
       if(err) message.reply('there was an error setting the channel, please try again.')
-      else message.reply('welcome message turned on.')
+
       })
-      else connection.query(`UPDATE Guild SET welcome_msg = 0, welcome_channel_id = NULL WHERE guild_id = ${message.guild.id}`, (err) => {
-        if(err) message.reply('there was an error switching off the command, please try again.')
-        else message.reply('welcome message turned off.')
-      })
+    }
+      else{
+        message.reply('welcome message turned off.')
+        connection.query(`UPDATE Guild SET welcome_msg = 0, welcome_channel_id = NULL WHERE guild_id = ${message.guild.id}`, (err) => {
+          if(err) message.reply('there was an error switching off the command, please try again.')
+
+        })
+      }
   }else if(message.content.startsWith(prefix + 'autorole')){
     if(!message.member.permissions.has('MANAGE_GUILD')) return message.reply('you do not have the permission to perform this action.')
     if(!message.member.permissions.has('MANAGE_ROLES')) return message.reply('you do not have the permission to perform this action.')
