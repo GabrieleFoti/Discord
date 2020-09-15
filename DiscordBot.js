@@ -2,6 +2,8 @@ require('dotenv-flow').config()
 const Discord = require('discord.js')
 const client = new Discord.Client()
 const mysql = require('mysql')
+const DBL = require('dblapi.js')
+const dbl = new DBL('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU3NjAyNjUwMDc5MzQ5OTY0OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjAwMTEyOTkzfQ.hLHgdv6x-t8y0kDi6-va1r1xCkEcZppuvBuky_0rHLY', client)
 var prefix = '.'
 var palese = '.'
 const config = {
