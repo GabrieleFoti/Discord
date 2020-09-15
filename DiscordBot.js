@@ -282,7 +282,7 @@ client.on('message', async message => {
 
     var collection = message.mentions.roles.filter(role => role.rawPosition <= high_role.rawPosition)
     message.mentions.members.each(member => member.roles.add(collection.array()))
-    if(collection !== message.mentions.roles) return message.reply(' i wasn\'t able to add all the roles to the member/s, make sure to put the Gin role higher on the server roles list.')
+    if(collection.array().length !== message.mentions.roles.array().length) return message.reply(' i wasn\'t able to add all the roles to the member/s, make sure to put the Gin role higher on the server roles list.')
 
   }
   else if(message.content.startsWith(prefix + 'coin')){
