@@ -280,7 +280,7 @@ client.on('message', async message => {
     if(!arga) return message.reply(' you must mention one or more members.')
     var high_role = message.guild.me.roles.highest
 
-    var collection = message.mentions.roles.filter(role => role.rawPosition < high_role.rawPosition)
+    var collection = message.mentions.roles.filter(role => role.rawPosition <= high_role.rawPosition)
     message.mentions.members.each(member => member.roles.add(collection.array()))
     if(collection !== message.mentions.roles) return message.reply(' i wasn\'t able to add all the roles to the member/s, make sure to put the Gin role higher on the server roles list.')
 
