@@ -231,7 +231,7 @@ client.on('message', async message => {
         embedmessage.setTimestamp()
         return message.channel.send(embedmessage);
       }else{
-        message.channel.send('You must mention someone first.')
+        return message.reply('You must mention someone first.')
       }
   }
   else if(message.content.startsWith(prefix + 'serverinfo')){
@@ -241,9 +241,9 @@ client.on('message', async message => {
       .setTitle(`${message.guild.name}`)
       .setThumbnail(message.guild.iconURL())
       .addFields(
-        {name:'Created by:' , value:`${message.guild.owner}`},
-        {name: 'Created at:',value: `${data}`},
-        {name: 'Region: ', value: message.guild.region, inline : true},
+        {name :'Created by:' , value :`${message.guild.owner}`},
+        {name : 'Created at:',value : `${data}`},
+        {name : 'Region: ', value : message.guild.region, inline : true},
         {name : 'AFKTimeout: ', value : message.guild.afkTimeout / 60 + ' mins', inline : true},
         {name : 'Member count: ', value : message.guild.memberCount, inline : true},
        )
@@ -254,6 +254,7 @@ client.on('message', async message => {
   }
   else if(message.content.startsWith(prefix + 'roleinfo')){
     var role = message.mentions.roles.first()
+    if(!role) return message.reply(' you must mention a role.')
     data = new Date(role.createdTimestamp).toGMTString();
     let embed = new Discord.MessageEmbed()
     .setAuthor('Gin', client.user.avatarURL())
@@ -268,6 +269,19 @@ client.on('message', async message => {
     )
     .setTimestamp()
     message.channel.send(embed)
+  }
+  else if(message.content.startsWith(prefix + 'roleassign')){
+    if(!message.member.permissions.has("MANAGE_ROLES")) return message.reply(' you don\'t have the permission to do that.')
+    args = message.mentions
+    if(!args) return message.reply(' you must mention a role/s and a member/s.')
+    arg = message.mentions.roles.first()
+    if(!arg) return message.reply(' you must mention one or more roles.')
+    arga = message.mentions.members.first()
+    if(!arga) return message.reply(' you must mention one or more members.')
+
+    message.mentions.members.each(member => member.roles.add(message.mentions.roles.array())
+
+
   }
   else if(message.content.startsWith(prefix + 'coin')){
     var x = Math.floor(Math.random() * 2)
