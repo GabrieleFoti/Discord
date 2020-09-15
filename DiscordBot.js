@@ -123,7 +123,7 @@ client.on('message', async message => {
     embedMsg.setDescription('Hi I\'m Gin, I am capable of executing some moderation commands to help you manage your server.')
     embedMsg.addFields(
       {name : 'Managing commands: ', value : '``togglewelcome`` [on/off] [tag of the channel to send the message in] \n``autorole`` [on/off] [role tag] sets an autorole for the new members.'},
-      {name : 'Moderation commands: ', value : '``setprefix`` [new prefix] \n``clear`` [number of messages(max 100)] \n``kick`` [member tag or member id] [reason(optional)] \n``ban`` [member tag] [reason(optional)] \n``softban`` [member tag or id] \n``unban`` [member tag or id] \n``lock`` [channel tag] \n``unlock`` [channel tag]'},
+      {name : 'Moderation commands: ', value : '``setprefix`` [new prefix] \n``clear`` [number of messages(max 100)] \n``kick`` [member tag or member id] [reason(optional)] \n``ban`` [member tag] [reason(optional)] \n``softban`` [member tag or id] \n``unban`` [member tag or id] \n``lock`` [channel tag] \n``unlock`` [channel tag] \n ``roleassign`` [member/s] [role/s]'},
       {name : 'Info commands: ', value : '``userinfo`` [user tag] \n``serverinfo`` \n``roleinfo`` [role tag]'},
       {name : 'Funny commands: ', value : '``coinflip`` \n``dice`` [n faces of the dice] '}
     )
@@ -273,14 +273,16 @@ client.on('message', async message => {
   else if(message.content.startsWith(prefix + 'roleassign')){
     if(!message.member.permissions.has("MANAGE_ROLES")) return message.reply(' you don\'t have the permission to do that.')
     args = message.mentions
-    if(!args) return message.reply(' you must mention a role/s and a member/s.')
+    if(!args.roles.first() && !args.members.first()) return message.reply(' you must mention a role/s and a member/s.')
     arg = message.mentions.roles.first()
     if(!arg) return message.reply(' you must mention one or more roles.')
     arga = message.mentions.members.first()
     if(!arga) return message.reply(' you must mention one or more members.')
+    var high_role = message.guild.me.roles.highest
 
-    message.mentions.members.each(member => member.roles.add(message.mentions.roles.array())
-
+    var collection = message.mentions.roles.filter(role => role.rawPosition < high_role.rawPosition)
+    message.mentions.members.each(member => member.roles.add(collection.array()))
+    if(collection !== message.mentions.roles) return message.reply(' i wasn\'t able to add all the roles to the member/s, make sure to put the Gin role higher on the server roles list.')
 
   }
   else if(message.content.startsWith(prefix + 'coin')){
