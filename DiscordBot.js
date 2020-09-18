@@ -300,7 +300,7 @@ client.on('message', async message => {
     message.reply(x)
 
   }
-  else if(message.content.startsWith(prefix + 'setprefix')){
+  else if(message.content.startsWith(prefix + 'setprefix')){ 
     if(!message.member.permissions.has('MANAGE_GUILD')) return message.reply('you do not have the permission to perform this action.')
     var args = message.content.split(' ')[1]
     if(args === undefined) return message.reply('you must specify a new prefix to set.')
