@@ -294,7 +294,7 @@ client.on('message', async message => {
   }
   else if(message.content.startsWith(prefix + 'dice')){
     let args = message.content.split(' ')[1]
-    if(isNan(args)) return message.reply('you must enter the number of dice\'s faces.')
+    if(isNaN(args)) return message.reply('you must enter the number of dice\'s faces.')
     var x = Math.floor(Math.random() * args + 1)
 
     message.reply(x)
