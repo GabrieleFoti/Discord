@@ -279,6 +279,7 @@ client.on('message', async message => {
     if(!arg) return message.reply(' you must mention one or more roles.')
     arga = message.mentions.members.first()
     if(!arga) return message.reply(' you must mention one or more members.')
+    message.react('✅')
     var high_role = message.guild.me.roles.highest
 
     var collection = message.mentions.roles.filter(role => role.rawPosition <= high_role.rawPosition)
