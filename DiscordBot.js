@@ -112,7 +112,7 @@ client.on('message', async message => {
   }
 
   else if(message.content.startsWith(prefix + 'info')){
-    if(message.author.id !== 366345779687981056 && message.author.id !== 359648176791355403) return mesage.reply('you do not have the permission to do that.')
+    if(message.author.id != 366345779687981056 && message.author.id != 359648176791355403) return mesage.reply('you do not have the permission to do that.')
 
     message.channel.send(`Sto guardando ${client.guilds.cache.array().length} server \nuptime : ${Math.round(client.uptime / 3600000)} ore \nutenti : ${client.users.cache.array().length}`)
   }
