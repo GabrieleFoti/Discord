@@ -138,7 +138,7 @@ client.on('message', async message => {
 
     args = message.content.split(' ')[1]
     arg = parseInt(args, 10)
-    if(arg < 0 || arg > 100 || arg === null) return message.reply('you must specify a number of messages to delete (max 100)')
+    if(arg < 0 || arg > 100 || arg === null) return message.reply('you must specify a number of messages to delete (max 100).')
     message.delete().then(() => {
       message.channel.bulkDelete(arg, true)
       message.reply('messages deleted.').then(message => message.delete({timeout : 3000}))
@@ -151,15 +151,15 @@ client.on('message', async message => {
     var member = message.mentions.members.first()
     if(!member){
     memberSnowflake = args[1]
-    if(isNaN(memberSnowflake)) return message.reply('you must specify a member to kick')
+    if(isNaN(memberSnowflake)) return message.reply('you must specify a member to kick.')
     member = message.guild.members.cache.get(id = memberSnowflake)
-    if(member === undefined) return message.reply('this id does not correspond to any member of the guild')
+    if(member === undefined) return message.reply('this id does not correspond to any member of the guild.')
     }
     if(message.member.permissions.has('ADMINISTRATOR') && member.permissions.has('ADMINISTRATOR')) return message.reply('you cannot kick another administrator.')
     reason = args.splice(2,).join(' ')
     if(!reason) reason = undefined
     if(member.user.bot) member.kick(reason)
-    else member.send(`You have been kicked from ***${message.guild.name}*** for reason: ***${reason}***`).then(() => member.kick(reason))
+    else member.send(`You have been kicked from ***${message.guild.name}*** for reason: ***${reason}***.`).then(() => member.kick(reason))
   }
   else if(message.content.startsWith(prefix + 'ban')){
 
@@ -167,9 +167,9 @@ client.on('message', async message => {
     args = message.content.split(' ')
     var member = message.mentions.members.first()
     if(!member){memberSnowflake = args[1]
-    if(isNaN(memberSnowflake)) return message.reply('you must specify a member to ban')
+    if(isNaN(memberSnowflake)) return message.reply('you must specify a member to ban.')
     member = message.guild.members.cache.get(id = memberSnowflake)
-    if(member === undefined) return message.reply('this id does not correspond to any member of the guild')
+    if(member === undefined) return message.reply('this id does not correspond to any member of the guild.')
     }
     if(message.member.permissions.has('ADMINISTRATOR') && member.permissions.has('ADMINISTRATOR')) return message.reply('you cannot ban another administrator.')
     reason = args.splice(2,).join(' ')
@@ -185,13 +185,13 @@ client.on('message', async message => {
     var member = message.mentions.members.first()
     if(!member){
     memberSnowflake = args[1]
-    if(isNaN(memberSnowflake)) return message.reply('You must specify a member to ban')
+    if(isNaN(memberSnowflake)) return message.reply('You must specify a member to ban.')
     member = message.guild.members.cache.get(id = memberSnowflake)
-    if(member === undefined) return message.reply('This id does not correspond to any member of the guild')
+    if(member === undefined) return message.reply('This id does not correspond to any member of the guild.')
     }
     if(message.member.permissions.has('ADMINISTRATOR') && member.permissions.has('ADMINISTRATOR')) return message.reply('you cannot softban another administrator.')
     reason = args.splice(2,).join(' ')
-    member.send(`You have been kicked from ***${message.guild.name}*** for reason: ***${reason}***`).then(() => {member.ban({days : 7, reason : reason}); message.guild.members.unban(member)})
+    member.send(`You have been kicked from ***${message.guild.name}*** for reason: ***${reason}***.`).then(() => {member.ban({days : 7, reason : reason}); message.guild.members.unban(member)})
 
   }
   else if(message.content.startsWith(prefix + 'unban')){
@@ -200,9 +200,9 @@ client.on('message', async message => {
     var member = message.mentions.members.first()
     if(!member){
     memberSnowflake = args[1]
-    if(isNaN(memberSnowflake)) return message.reply('You must specify a member to ban')
+    if(isNaN(memberSnowflake)) return message.reply('You must specify a member to ban.')
     member = message.guild.members.cache.get(id = memberSnowflake)
-    if(member === undefined) return message.reply('This id does not correspond to any member of the guild')
+    if(member === undefined) return message.reply('This id does not correspond to any member of the guild.')
     }
     message.guild.members.unban(member).then(() => message.reply(`${member} unbanned.`)).catch(() => message.reply('the member is not currently banned.'))
   }
