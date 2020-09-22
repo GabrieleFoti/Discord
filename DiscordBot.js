@@ -121,7 +121,7 @@ client.on('message', async message => {
     let embedMsg = new Discord.MessageEmbed()
     embedMsg.setAuthor('Gin', client.user.avatarURL())
     embedMsg.setTitle(`Commands list   |   current prefix: '${prefix}'`)
-    embedMsg.setDescription('Hi I\'m Gin, I am capable of executing some moderation commands to help you manage your server.\n Here\'s the invite to my server:\n https://discord.gg/MDa8rHK')
+    embedMsg.setDescription('Hi I\'m Gin, I am capable of executing some moderation commands to help you manage your server.\n Here\'s the invite to my server:\n https://discord.gg/MDa8rHK\n\nIf you want to support us here\'s the link to our PayPal moneybox: https://paypal.me/pools/campaign/114580897007583176')
     embedMsg.addFields(
       {name : 'Managing commands: ', value : '``togglewelcome`` [on/off] [tag of the channel to send the message in] \n``autorole`` [on/off] [role tag] sets an autorole for the new members.'},
       {name : 'Moderation commands: ', value : '``setprefix`` [new prefix] \n``clear`` [number of messages(max 100)] \n``kick`` [member tag or member id] [reason(optional)] \n``ban`` [member tag] [reason(optional)] \n``softban`` [member tag or id] \n``unban`` [member tag or id] \n``lock`` [channel tag] \n``unlock`` [channel tag] \n ``roleassign`` [member/s] [role/s]'},
