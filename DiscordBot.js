@@ -48,7 +48,7 @@ client.on('ready', () => {
 })
 
 client.on('guildMemberAdd', (member) => {
-  connection.query(`SELECT welcome_msg, welcome_msg_content, welcome_channel_id, welcome_role, welcome_role_id FROM Guild WHERE guild_id = ${member.guild.id}`, (err, results) => {
+  connection.query(`SELECT welcome_msg, welcome_channel_id, welcome_role, welcome_role_id FROM Guild WHERE guild_id = ${member.guild.id}`, (err, results) => {
     if(err) console.error(err)
     else {
 
@@ -56,9 +56,7 @@ client.on('guildMemberAdd', (member) => {
       else{
         var channel = results[0].welcome_channel_id
         var welcome_channel = member.guild.channels.cache.get(channel)
-        if(results[0].welcome_msg_content === NULL)
         welcome_channel.send(`Welcome, ${member}. (っ◔◡◔)っ`)
-        else welcome_channel.send(`Hey, ${member}. ${results[0].welcome_msg_content}`)
       }
       if(results[0].welcome_role === 0) return undefined
       else{
