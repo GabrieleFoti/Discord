@@ -48,17 +48,19 @@ client.on('ready', () => {
 })
 
 client.on('guildMemberAdd', (member) => {
-  connection.query(`SELECT welcome_msg, welcome_channel_id, welcome_role, welcome_role_id FROM Guild WHERE guild_id = ${member.guild.id}`, (err, results) => {
+  connection.query(`SELECT welcome_msg, welcome_msg_content, welcome_channel_id, welcome_role, welcome_role_id FROM Guild WHERE guild_id = ${member.guild.id}`, (err, results) => {
     if(err) console.error(err)
     else {
 
-      if(results[0].welcome_msg === 0);
+      if(results[0].welcome_msg === 0) return undefined
       else{
         var channel = results[0].welcome_channel_id
         var welcome_channel = member.guild.channels.cache.get(channel)
+        if(results[0].welcome_msg_content === NULL)
         welcome_channel.send(`Welcome, ${member}. (っ◔◡◔)っ`)
+        else welcome_channel.send(`Hey, ${member}. ${results[0].welcome_msg_content}`)
       }
-      if(results[0].welcome_role === 0);
+      if(results[0].welcome_role === 0) return undefined
       else{
         var role = results[0].welcome_role_id
         var welcome_role = member.guild.roles.cache.get(role)
@@ -342,6 +344,11 @@ client.on('message', async message => {
 
     if(toggle === 'on'){ connection.query(`UPDATE Guild SET welcome_role = 1, welcome_role_id = ${role.id} WHERE guild_id = ${message.guild.id}`); message.reply(` the ${role.name} role has been set as a welcome role.`)}
     else{ connection.query(`UPDATE Guild SET welcome_role = 0, welcome_role_id = NULL WHERE guild_id = ${message.guild.id}`); message.reply(` the feature has been disabled.`)}
+  }
+  else if(message.content.startsWith(prefix + 'setwelcomemsg')){
+    const text = message.content.replace(prefix + 'setwelcomemsg', '').slice(1)
+    connection.query(`UPDATE Guild SET welcome_msg_content = ${text} WHERE guild_id = ${message.guild.id}`)
+    message.reply(' your custom message has been set.')
   }
 
 })
