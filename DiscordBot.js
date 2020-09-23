@@ -347,6 +347,7 @@ client.on('message', async message => {
   }
   else if(message.content.startsWith(prefix + 'setwelcomemsg')){
     const text = message.content.replace(prefix + 'setwelcomemsg', '').slice(1)
+    text = text.replace('\'', '\\\'')
     connection.query(`UPDATE Guild SET welcome_msg_content = ${text} WHERE guild_id = ${message.guild.id}`)
     message.reply(' your custom message has been set.')
   }
