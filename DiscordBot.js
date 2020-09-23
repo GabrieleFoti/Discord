@@ -79,6 +79,7 @@ client.on('message', async message => {
     if(err){
       console.error(err)
     }
+    console.log(result)
     prefix = result[0].prefix
 
   })
@@ -344,12 +345,12 @@ client.on('message', async message => {
     if(toggle === 'on'){ connection.query(`UPDATE Guild SET welcome_role = 1, welcome_role_id = ${role.id} WHERE guild_id = ${message.guild.id}`); message.reply(` the ${role.name} role has been set as a welcome role.`)}
     else{ connection.query(`UPDATE Guild SET welcome_role = 0, welcome_role_id = NULL WHERE guild_id = ${message.guild.id}`); message.reply(` the feature has been disabled.`)}
   }
-  else if(message.content.startsWith(prefix + 'setwelcomemsg')){
-    const text = message.content.replace(prefix + 'setwelcomemsg', '').slice(1)
-    text = text.replace('\'', '\\\'')
-    connection.query(`UPDATE Guild SET welcome_msg_content = ${text} WHERE guild_id = ${message.guild.id}`)
-    message.reply(' your custom message has been set.')
-  }
+  //else if(message.content.startsWith(prefix + 'setwelcomemsg')){
+  //  const text = message.content.replace(prefix + 'setwelcomemsg', '').slice(1)
+  //  text.replace('\'', '\\\'')
+  //  connection.query(`UPDATE Guild SET welcome_msg_content = ${text} WHERE guild_id = ${message.guild.id}`)
+  //  message.reply(' your custom message has been set.')
+  //}
 
 })
 function resolve(x) {
