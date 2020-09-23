@@ -77,7 +77,6 @@ client.on('message', async message => {
     if(err){
       console.error(err)
     }
-    console.log(result)
     prefix = result[0].prefix
 
   })
