@@ -52,7 +52,7 @@ client.on('guildMemberAdd', (member) => {
     if(err) console.error(err)
     else {
 
-      if(results[0].welcome_msg === 0) return undefined
+      if(results[0].welcome_msg === 0);
       else{
         var channel = results[0].welcome_channel_id
         var welcome_channel = member.guild.channels.cache.get(channel)
