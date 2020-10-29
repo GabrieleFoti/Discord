@@ -116,7 +116,7 @@ client.on('message', async message => {
     message.channel.send(`Sto guardando ${client.guilds.cache.array().length} server \nuptime : ${Math.round(client.uptime / 3600000)} ore \nutenti : ${client.users.cache.array().length}`)
   }
   else if(message.content.startsWith(prefix + 'help')){
-    message.react('🌑')
+    message.react('🍉')
     let embedMsg = new Discord.MessageEmbed()
     embedMsg.setAuthor('Gin', client.user.avatarURL())
     embedMsg.setTitle(`Commands list   |   current prefix: '${prefix}'`)
